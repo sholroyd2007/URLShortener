@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mt-5">Url Shortener</h1>
+    <div class="row">
+        <div class="col-lg-6 offset-lg-3">
+            <form asp-action="Shorten" method="post">
+                <div class="input-group mb-3 mt-5">
+                    <input type="url" name="LongUrl" id="LongUrl" class="form-control form-control-lg" required placeholder="Destination URL including https://" aria-label="URL To Shorten" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary btn-lg" type="submit" id="button-addon2">Shorten</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

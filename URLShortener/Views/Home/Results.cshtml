@@ -1,0 +1,15 @@
+﻿@model Url
+
+@{
+    ViewData["Title"] = "Your Shortened Url";
+    string url = HttpContextAccessor.HttpContext.Request.Host.Value;
+    var newUrl = $"{url}/A/{Model.ShortCode}";
+}
+
+<div class="container">
+    <div class="row">
+        <h1>
+            <a asp-action="Index" asp-controller="A" asp-route-shortened="@Model.ShortCode" target="_blank">@newUrl</a>
+        </h1>
+    </div>
+</div>
