@@ -77,6 +77,8 @@ namespace URLShortener.Controllers
             return View(url);
         }
 
+        //A Different Change
+
         internal static string GetRandomString(int stringLength)
         {
             const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
