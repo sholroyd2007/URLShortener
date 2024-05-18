@@ -1,6 +1,9 @@
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using URLShortener.Data;
+using URLShortener.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//Services
+builder.Services.AddScoped<IUrlService, UrlService>();
+
+//Hangfire
+builder.Services.AddHangfire(x => x
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -43,5 +64,7 @@ app.MapControllerRoute(
     defaults: new { controller = "A", action = "Index" });
 
 app.MapRazorPages();
+
+app.UseHangfireDashboard("/hangfire");
 
 app.Run();

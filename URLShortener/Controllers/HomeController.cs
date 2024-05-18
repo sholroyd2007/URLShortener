@@ -41,18 +41,30 @@ namespace URLShortener.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Shorten([FromForm] string LongUrl)
         {
-            var newUrl = new Url();
-            var newString = GetRandomString(6);
-            if(Context.Urls.Any(e=>e.ShortCode == newString))
+            var existing = await Context.Urls.AsNoTracking().FirstOrDefaultAsync(e => e.Destination == LongUrl);
+            if (existing == null)
             {
-                return await Shorten(LongUrl);
-            }
-            newUrl.ShortCode = newString;
-            newUrl.Destination = LongUrl;
-            Context.Urls.Add(newUrl);
-            await Context.SaveChangesAsync();
+                var newUrl = new Url();
+                var newString = GetRandomString(6);
+                if (Context.Urls.Any(e => e.ShortCode == newString))
+                {
+                    return await Shorten(LongUrl);
+                }
+                newUrl.ShortCode = newString;
+                newUrl.Destination = LongUrl;
+                Context.Urls.Add(newUrl);
+                await Context.SaveChangesAsync();
 
-            return RedirectToAction("Results", new { id = newUrl.Id });
+                return RedirectToAction("Results", new { id = newUrl.Id });
+            }
+            else
+            {
+                existing.Delete = DateTime.UtcNow.AddDays(14);
+                Context.Urls.Update(existing);
+                await Context.SaveChangesAsync();
+
+                return RedirectToAction("Results", new { id = existing.Id });
+            }  
         }
 
         public async Task<IActionResult> Results(int id)

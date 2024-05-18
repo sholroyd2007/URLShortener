@@ -14,6 +14,8 @@
                         <th>Destination</th>
                         <th>Clicks</th>
                         <th>ShortCode</th>
+                        <th>Created</th>
+                        <th>Expires</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -28,6 +30,8 @@
                             <td>@item.Destination</td>
                             <td>@item?.Clicks</td>
                             <td><a href="@newUrl" target="_blank">@newUrl</a></td>
+                            <td>@item.Created.ToString("ddd dd MMM yyyy")</td>
+                            <td>@item.Delete.ToString("ddd dd MMM yyyy")</td>
                             <td>
                                 <a asp-action="Delete" asp-controller="Urls" asp-route-id="@item.Id">Delete</a>
                             </td>

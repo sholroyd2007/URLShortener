@@ -10,6 +10,7 @@
     <div class="row">
         <h1>
             <a asp-action="Index" asp-controller="A" asp-route-shortened="@Model.ShortCode" target="_blank">@newUrl</a>
+            <p>This Url will expire on @Model.Delete.ToString("ddd dd MMM yyyy")</p>
         </h1>
     </div>
 </div>
